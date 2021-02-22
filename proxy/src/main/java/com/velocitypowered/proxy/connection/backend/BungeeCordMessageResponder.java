@@ -49,8 +49,12 @@ public class BungeeCordMessageResponder {
 
   private void processConnect(ByteBufDataInput in) {
     String serverName = in.readUTF();
-    proxy.getServer(serverName).ifPresent(server -> player.createConnectionRequest(server)
-        .fireAndForget());
+    proxy.getServer(serverName).ifPresent(server -> {
+      server.ping().thenAcceptAsync(ping -> {
+        player.createConnectionRequest(server)
+          .fireAndForget();
+      });
+    });
   }
 
   private void processConnectOther(ByteBufDataInput in) {

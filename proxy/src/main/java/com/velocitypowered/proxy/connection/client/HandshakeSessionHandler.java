@@ -107,7 +107,7 @@ public class HandshakeSessionHandler implements MinecraftSessionHandler {
 
     InetAddress address = ((InetSocketAddress) connection.getRemoteAddress()).getAddress();
     if (!server.getIpAttemptLimiter().attempt(address)) {
-      ic.disconnectQuietly(Component.text("You are logging in too fast, try again later."));
+      ic.disconnectQuietly(VelocityServer.getLocalizationString("connecting_too_fast"));
       return;
     }
 
@@ -117,7 +117,7 @@ public class HandshakeSessionHandler implements MinecraftSessionHandler {
     // and lower, otherwise IP information will never get forwarded.
     if (server.getConfiguration().getPlayerInfoForwardingMode() == PlayerInfoForwarding.MODERN
         && handshake.getProtocolVersion().compareTo(ProtocolVersion.MINECRAFT_1_13) < 0) {
-      ic.disconnectQuietly(Component.text("This server is only compatible with 1.13 and above."));
+      ic.disconnectQuietly(VelocityServer.getLocalizationString("1_13_and_above"));
       return;
     }
 

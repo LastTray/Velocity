@@ -50,7 +50,10 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
+
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -77,8 +80,15 @@ import java.util.stream.Collectors;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.yaml.YamlConfiguration;
 import org.asynchttpclient.AsyncHttpClient;
 import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -115,7 +125,9 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
   private boolean shutdown = false;
   private final VelocityPluginManager pluginManager;
   private final AdventureBossBarManager bossBarManager;
-
+  
+  private static final ConfigurationNode localizationConfig = loadLocalizationConfig();
+  
   private final Map<UUID, ConnectedPlayer> connectionsByUuid = new ConcurrentHashMap<>();
   private final Map<String, ConnectedPlayer> connectionsByName = new ConcurrentHashMap<>();
   private final VelocityConsole console;
@@ -123,7 +135,7 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
   private final VelocityEventManager eventManager;
   private final VelocityScheduler scheduler;
   private final VelocityChannelRegistrar channelRegistrar = new VelocityChannelRegistrar();
-
+  
   VelocityServer(final ProxyOptions options) {
     pluginManager = new VelocityPluginManager(this);
     eventManager = new VelocityEventManager(pluginManager);
@@ -134,8 +146,53 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
     servers = new ServerMap(this);
     this.options = options;
     this.bossBarManager = new AdventureBossBarManager();
+    
+    
   }
-
+  
+  public static TextComponent buildComponent(String string) {
+    return LegacyComponentSerializer.legacyAmpersand().deserialize(string);
+  }
+  
+  public static String getLocalizationStringLiteral(Object... path) {
+    ConfigurationNode node = localizationConfig.getNode(path);
+    if (node.isVirtual()) {
+      return "";
+    } else {
+      return node.getString();
+    }
+  }
+  
+  public static TextComponent getLocalizationString(Object... path) {
+    ConfigurationNode node = localizationConfig.getNode(path);
+    if (node.isVirtual()) {
+      return Component.text("");
+    } else {
+      return LegacyComponentSerializer.legacyAmpersand().deserialize(node.getString());
+    }
+  }
+  
+  
+  private static ConfigurationNode loadLocalizationConfig() {
+  
+    File outFile = new File(System.getProperty("user.dir") + "/locale.yml");
+  
+    if (!outFile.exists()) {
+      outFile.toPath().getParent().toFile().mkdir();
+      try (InputStream in = Velocity.class.getClassLoader().getResource("locale.yml").openStream()) {
+        Files.copy(in, outFile.toPath());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  
+    try {
+      return YAMLConfigurationLoader.builder().setFile(outFile).build().load();
+    } catch (IOException ioException) {
+      return null;
+    }
+  }
+  
   public KeyPair getServerKeyPair() {
     return serverKeyPair;
   }
@@ -471,7 +528,7 @@ public class VelocityServer implements ProxyServer, ForwardingAudience {
    * @param explicitExit whether the user explicitly shut down the proxy
    */
   public void shutdown(boolean explicitExit) {
-    shutdown(explicitExit, Component.text("Proxy shutting down."));
+    shutdown(explicitExit, VelocityServer.getLocalizationString("shutting_down"));
   }
 
   @Override

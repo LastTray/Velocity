@@ -1,0 +1,8 @@
+already_connected: "&cВы уже подключены к этому серверу!"
+connection_in_progress: "&cПодключение уже в процессе..."
+internal_error: "&cПроизошла ошибка при обработке соединения"
+failed_to_connect: 'Не удалось подключить вас к {server}. Попробуйте позже.'
+connection_encountered_error: "Your connection to {server} encountered an error."
+shutting_down: "Сервер перезагружается..."
+connecting_too_fast: "Вы переподключаетесь слишком быстро!"
+1_13_and_above: "Сервер совместим только с версией 1.13 и выше"

@@ -12,6 +12,9 @@ plugins {
     id "com.github.spotbugs" version "4.2.4" apply false
 }
 
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
 allprojects {
     apply plugin: "com.github.spotbugs"
 

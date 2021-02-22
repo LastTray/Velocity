@@ -549,16 +549,13 @@ public class ConnectedPlayer implements MinecraftConnectionAssociation, Player {
     }
     String userMessage;
     if (connectedServer != null && connectedServer.getServerInfo().equals(server.getServerInfo())) {
-      userMessage = "Your connection to " + server.getServerInfo().getName() + " encountered an "
-          + "error.";
+      userMessage = VelocityServer.getLocalizationStringLiteral("connection_encountered_error").replace("{server}", server.getServerInfo().getName());
     } else {
       logger.error("{}: unable to connect to server {}", this, server.getServerInfo().getName(),
           wrapped);
-      userMessage = "Unable to connect to " + server.getServerInfo().getName() + ". Try again "
-          + "later.";
+      userMessage = VelocityServer.getLocalizationStringLiteral("failed_to_connect").replace("{server}", server.getServerInfo().getName());
     }
-    handleConnectionException(server, null, Component.text(userMessage,
-        NamedTextColor.RED), safe);
+    handleConnectionException(server, null, VelocityServer.buildComponent(userMessage), safe);
   }
 
   /**
