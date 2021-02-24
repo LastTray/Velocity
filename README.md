@@ -35,4 +35,4 @@ Once you've built Velocity, you can copy and run the `-all` JAR from
 `proxy/build/libs`. Velocity will generate a default configuration file
 and you can configure it from there.
 
-Alternatively, you can get the proxy JAR from the original Velocity's [donwload page](https://www.velocitypowered.com/downloads).
+Alternatively, you can get the proxy JAR from the original Velocity's [donwload page](https://www.velocitypowered.com/downloads) (what's the point of this repo then?)
