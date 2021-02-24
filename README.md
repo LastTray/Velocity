@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/jenkins/s/https/ci.velocitypowered.com/job/velocity.svg)](https://ci.velocitypowered.com/job/velocity/)
 [![Join our Discord](https://img.shields.io/discord/472484458856185878.svg?logo=discord&label=)](https://discord.gg/8cB9Bgf)
-[![LastTray Discord](https://img.shields.io/discord/472484458856185878.svg?logo=discord&label=)](https://discord.gg/UPPGSyQTEx)
+[![LastTray Discord](https://img.shields.io/discord/400300648865726485.svg?logo=discord&label=)](https://discord.gg/UPPGSyQTEx)
 
 
 A Minecraft server proxy with unparalleled server support, scalability,
